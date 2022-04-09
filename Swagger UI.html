@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<!-- saved from url=(0065)https://localhost:44336/swagger/ui/index#!/Patient/Patient_Post_0 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Swagger UI</title>
+  <link rel="icon" type="image/png" href="https://localhost:44336/swagger/ui/images/favicon-32x32-png" sizes="32x32">
+  <link rel="icon" type="image/png" href="https://localhost:44336/swagger/ui/images/favicon-16x16-png" sizes="16x16">
+  <link href="./Swagger UI_files/typography-css" media="screen" rel="stylesheet" type="text/css">
+  <link href="./Swagger UI_files/reset-css" media="screen" rel="stylesheet" type="text/css">
+  <link href="./Swagger UI_files/screen-css" media="screen" rel="stylesheet" type="text/css">
+  <link href="./Swagger UI_files/reset-css" media="print" rel="stylesheet" type="text/css">
+  <link href="./Swagger UI_files/print-css" media="print" rel="stylesheet" type="text/css">
+  
+
+  <script src="./Swagger UI_files/object-assign-pollyfill-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/jquery-1-8-0-min-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/jquery-slideto-min-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/jquery-wiggle-min-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/jquery-ba-bbq-min-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/handlebars-4-0-5-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/lodash-min-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/backbone-min-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/swagger-ui-min-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/highlight-9-1-0-pack-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/highlight-9-1-0-pack_extended-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/jsoneditor-min-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/marked-js" type="text/javascript"></script>
+  <script src="./Swagger UI_files/swagger-oauth-js" type="text/javascript"></script>
+
+  <!-- Some basic translations -->
+  <!-- <script src='lang/translator.js' type='text/javascript'></script> -->
+  <!-- <script src='lang/ru.js' type='text/javascript'></script> -->
+  <!-- <script src='lang/en.js' type='text/javascript'></script> -->
+
+  <script type="text/javascript">
+    $(function () {
+
+      // Get Swashbuckle config into JavaScript
+      function arrayFrom(configString) {
+        return (configString !== "") ? configString.split('|') : [];
+      }
+
+      function stringOrNullFrom(configString) {
+        return (configString !== "null") ? configString : null;
+      }
+
+      window.swashbuckleConfig = {
+        rootUrl: 'https://localhost:44336',
+        discoveryPaths: arrayFrom('swagger/docs/v1'),
+        booleanValues: arrayFrom('true|false'),
+        validatorUrl: stringOrNullFrom(''),
+        customScripts: arrayFrom(''),
+        docExpansion: 'none',
+        supportedSubmitMethods: arrayFrom('get|put|post|delete|options|head|patch'),
+        oAuth2Enabled: ('false' == 'true'),
+        oAuth2ClientId: '',
+        oAuth2ClientSecret: '',
+        oAuth2Realm: '',
+        oAuth2AppName: '',
+        oAuth2ScopeSeperator: ' ',
+        oAuth2AdditionalQueryStringParams: JSON.parse('{}'),
+        apiKeyName: 'api_key',
+        apiKeyIn: 'query'
+      };
+
+      hljs.configure({
+        highlightSizeThreshold: 5000
+      });
+
+      // Pre load translate...
+      if(window.SwaggerTranslator) {
+        window.SwaggerTranslator.translate();
+      }
+      window.swaggerUi = new SwaggerUi({
+        url: swashbuckleConfig.rootUrl + "/" + swashbuckleConfig.discoveryPaths[0],
+        dom_id: "swagger-ui-container",
+        booleanValues: swashbuckleConfig.booleanValues,
+        supportedSubmitMethods: swashbuckleConfig.supportedSubmitMethods,
+        onComplete: function(swaggerApi, swaggerUi){
+          if (typeof initOAuth == "function" && swashbuckleConfig.oAuth2Enabled) {
+            initOAuth({
+              clientId: swashbuckleConfig.oAuth2ClientId,
+              clientSecret: swashbuckleConfig.oAuth2ClientSecret,
+              realm: swashbuckleConfig.oAuth2Realm,
+              appName: swashbuckleConfig.oAuth2AppName,
+              scopeSeparator: swashbuckleConfig.oAuth2ScopeSeperator,
+              additionalQueryStringParams: swashbuckleConfig.oAuth2AdditionalQueryStringParams
+            });
+          }
+
+          if(window.SwaggerTranslator) {
+            window.SwaggerTranslator.translate();
+          }
+
+          addApiKeyAuthorization();
+
+          window.swaggerApi = swaggerApi;
+          _.each(swashbuckleConfig.customScripts, function (script) {
+            $.getScript(script);
+          });
+        },
+        onFailure: function(data) {
+          log("Unable to Load SwaggerUI");
+        },
+        docExpansion: swashbuckleConfig.docExpansion,
+        jsonEditor: false,
+        apisSorter: null, // default to server
+        defaultModelRendering: 'schema',
+        showRequestHeaders: false,
+        oauth2RedirectUrl: window.location.href.replace('index', 'o2c-html').split('#')[0]
+      });
+
+      if (window.swashbuckleConfig.validatorUrl !== '')
+        window.swaggerUi.options.validatorUrl = window.swashbuckleConfig.validatorUrl;
+
+      function addApiKeyAuthorization() {
+        var key = $('#input_apiKey')[0].value;
+        if (key && key.trim() != "") {
+          if (swashbuckleConfig.apiKeyIn === "query") {
+              key = encodeURIComponent(key);
+          }
+          var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization(swashbuckleConfig.apiKeyName, key, swashbuckleConfig.apiKeyIn);
+          window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth);
+          log("added key " + key);
+        }
+      }
+      $('#input_apiKey').change(addApiKeyAuthorization);
+
+      window.swaggerUi.load();
+
+      function log() {
+        if ('console' in window) {
+          console.log.apply(console, arguments);
+        }
+      }
+  });
+  </script>
+</head>
+
+<body class="swagger-section" data-new-gr-c-s-check-loaded="14.1056.0" data-gr-ext-installed="">
+<div id="header">
+  <div class="swagger-ui-wrap">
+    <a id="logo" href="http://swagger.io/"><img class="logo__img" alt="swagger" height="30" width="30" src="./Swagger UI_files/logo_small-png"><span class="logo__title">swagger</span></a>
+    <form id="api_selector">
+      <div class="input"><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"></div>
+      <div class="input"><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"></div>
+      <div class="input"><a id="explore" class="header__btn" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Explore</a></div>
+    </form>
+  </div>
+</div>
+
+<div id="message-bar" class="swagger-ui-wrap message-success" data-sw-translate=""></div>
+<div id="swagger-ui-container" class="swagger-ui-wrap"><div class="info" id="api_info">
+  <div class="info_title">WebApplication1</div>
+  <div class="info_description markdown"></div>
+  
+  
+  
+  
+  
+</div>
+<div class="container" id="resources_container">
+  <div class="authorize-wrapper"></div>
+
+  <ul id="resources"><li id="resource_Patient" class="resource active"><div class="heading">
+  <h2>
+    <a href="https://localhost:44336/swagger/ui/index#!/Patient" class="toggleEndpointList" data-id="Patient">Patient</a> 
+  </h2>
+  <ul class="options">
+    <li>
+      <a href="https://localhost:44336/swagger/ui/index#!/Patient" id="endpointListTogger_Patient" class="toggleEndpointList" data-id="Patient" data-sw-translate="">Show/Hide</a>
+    </li>
+    <li>
+      <a href="https://localhost:44336/swagger/ui/index#" class="collapseResource" data-id="Patient" data-sw-translate="">
+        List Operations
+      </a>
+    </li>
+    <li>
+      <a href="https://localhost:44336/swagger/ui/index#" class="expandResource" data-id="Patient" data-sw-translate="">
+        Expand Operations
+      </a>
+    </li>
+  </ul>
+</div>
+<ul class="endpoints" id="Patient_endpoint_list" style="">
+
+<li class="endpoint">  <ul class="operations">
+    <li class="post operation" id="Patient_Patient_Post">
+      <div class="heading">
+        <h3>
+          <span class="http_method">
+          <a href="https://localhost:44336/swagger/ui/index#!/Patient/Patient_Post" class="toggleOperation">post</a>
+          </span>
+          <span class="path">
+          <a href="https://localhost:44336/swagger/ui/index#!/Patient/Patient_Post" class="toggleOperation ">/api/patient/records</a>
+          </span>
+        </h3>
+        <ul class="options">
+          <li>
+          <a href="https://localhost:44336/swagger/ui/index#!/Patient/Patient_Post" class="toggleOperation"><span class="markdown"></span></a>
+          </li>
+        </ul>
+      </div>
+      <div class="content" id="Patient_Patient_Post_content" style="">
+          <div class="response-class">
+            <h4><span data-sw-translate="">Response Class</span> (<span data-sw-translate="">Status</span> 200)</h4>
+              <div class="markdown"><p>OK</p>
+</div>
+            <p><span class="model-signature"><div>
+<div>
+<ul class="signature-nav">
+  <li><a class="description-link" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Model</a></li>
+  <li><a class="snippet-link selected" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Example Value</a></li>
+</ul>
+<div>
+
+<div class="signature-container">
+  <div class="description" style="display: none;">
+      <span class="strong">Inline Model {</span><span class="strong">}</span>
+  </div>
+
+  <div class="snippet" style="display: block;">
+      <div class="snippet_json" style="display: block;">
+        <pre><code>{}</code></pre>
+        
+      </div>
+    <div class="snippet_xml" style="display: none;">
+      <pre><code>&lt;?xml version="1.0"?&gt;
+&lt;!-- invalid XML --&gt;
+</code></pre>
+      
+    </div>
+  </div>
+</div>
+</div></div></div></span></p>
+            <br>
+            <div class="response-content-type"><div><label data-sw-translate="" for="rct0.13579673509003998">Response Content Type</label>
+<select name="responseContentType" id="rct0.13579673509003998">
+  <option value="application/json">application/json</option>
+  <option value="text/json">text/json</option>
+  <option value="application/xml">application/xml</option>
+  <option value="text/xml">text/xml</option>
+</select>
+</div></div>
+            </div>
+
+
+        <form accept-charset="UTF-8" class="sandbox">
+          <div style="margin:0;padding:0;display:inline"></div>
+          <h4 data-sw-translate="">Parameters</h4>
+          <table class="fullwidth parameters">
+          <thead>
+            <tr>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter</th>
+            <th style="width: 310px; max-width: 310px" data-sw-translate="">Value</th>
+            <th style="width: 200px; max-width: 200px" data-sw-translate="">Description</th>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter Type</th>
+            <th style="width: 220px; max-width: 230px" data-sw-translate="">Data Type</th>
+            </tr>
+          </thead>
+          <tbody class="operation-params">
+
+          <tr><td class="code required"><label for="mrecord0.9190486653340559">record</label></td>
+<td>
+				<textarea class="body-textarea required" placeholder="(required)" name="record" id="mrecord0.9190486653340559"></textarea>
+				<div class="editor_holder"></div>
+				<br>
+				<div class="parameter-content-type"><div><label for="pct0.10848269716501258" data-sw-translate="">Parameter content type:</label>
+<select name="parameterContentType" id="pct0.10848269716501258">
+  <option value="application/json">application/json</option>
+  <option value="text/json">text/json</option>
+  <option value="application/xml">application/xml</option>
+  <option value="text/xml">text/xml</option>
+  <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+</select>
+</div></div>
+</td>
+<td>
+	<strong><span class="markdown"></span></strong>
+</td>
+<td>body</td>
+<td><span class="model-signature"><div>
+<div>
+<ul class="signature-nav">
+  <li><a class="description-link" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Model</a></li>
+  <li><a class="snippet-link selected" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Example Value</a></li>
+</ul>
+<div>
+
+<div class="signature-container">
+  <div class="description" style="display: none;">
+      <span class="strong">record {</span><div><span class="propName ">Id</span> (<span class="propType">integer</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">patientID</span> (<span class="propType">integer</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">diagnosis</span> (<span class="propType">string</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">birthday</span> (<span class="propType">string</span>, <span class="propOptKey">optional</span>)</div><span class="strong">}</span>
+  </div>
+
+  <div class="snippet" style="display: block;">
+      <div class="snippet_json" style="display: block;">
+        <pre><code>{
+  "Id": 0,
+  "patientID": 0,
+  "diagnosis": "string",
+  "birthday": "2022-04-08T23:49:21.607Z"
+}</code></pre>
+        <small class="notice" data-sw-translate=""></small>
+      </div>
+    <div class="snippet_xml" style="display: none;">
+      <pre><code>&lt;?xml version="1.0"?&gt;
+&lt;record&gt;
+  &lt;Id&gt;1&lt;/Id&gt;
+  &lt;patientID&gt;1&lt;/patientID&gt;
+  &lt;diagnosis&gt;string&lt;/diagnosis&gt;
+  &lt;birthday&gt;1970-01-01T00:00:00.001Z&lt;/birthday&gt;
+&lt;/record&gt;
+</code></pre>
+      <small class="notice" data-sw-translate=""></small>
+    </div>
+  </div>
+</div>
+</div></div></div></span></td>
+</tr></tbody>
+          </table>
+          <div class="sandbox_header">
+            <input class="submit" type="submit" value="Try it out!" data-sw-translate="">
+            <a href="https://localhost:44336/swagger/ui/index#" class="response_hider" style="display:none" data-sw-translate="">Hide Response</a>
+            <span class="response_throbber" style="display:none"></span>
+          </div>
+        </form>
+        <div class="response" style="display:none">
+          <h4 class="curl">Curl</h4>
+          <div class="block curl"></div>
+          <h4 data-sw-translate="">Request URL</h4>
+          <div class="block request_url"></div>
+          <h4 data-sw-translate="">Response Body</h4>
+          <div class="block response_body"></div>
+          <h4 data-sw-translate="">Response Code</h4>
+          <div class="block response_code"></div>
+          <h4 data-sw-translate="">Response Headers</h4>
+          <div class="block response_headers"></div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li><li class="endpoint">  <ul class="operations">
+    <li class="get operation" id="Patient_Patient_GetPatient">
+      <div class="heading">
+        <h3>
+          <span class="http_method">
+          <a href="https://localhost:44336/swagger/ui/index#!/Patient/Patient_GetPatient" class="toggleOperation">get</a>
+          </span>
+          <span class="path">
+          <a href="https://localhost:44336/swagger/ui/index#!/Patient/Patient_GetPatient" class="toggleOperation ">/api/Patient/{ID}</a>
+          </span>
+        </h3>
+        <ul class="options">
+          <li>
+          <a href="https://localhost:44336/swagger/ui/index#!/Patient/Patient_GetPatient" class="toggleOperation"><span class="markdown"></span></a>
+          </li>
+        </ul>
+      </div>
+      <div class="content" id="Patient_Patient_GetPatient_content" style="">
+          <div class="response-class">
+            <h4><span data-sw-translate="">Response Class</span> (<span data-sw-translate="">Status</span> 200)</h4>
+              <div class="markdown"><p>OK</p>
+</div>
+            <p><span class="model-signature"><div>
+<div>
+<ul class="signature-nav">
+  <li><a class="description-link" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Model</a></li>
+  <li><a class="snippet-link selected" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Example Value</a></li>
+</ul>
+<div>
+
+<div class="signature-container">
+  <div class="description" style="display: none;">
+      <span class="strong">Inline Model {</span><span class="strong">}</span>
+  </div>
+
+  <div class="snippet" style="display: block;">
+      <div class="snippet_json" style="display: block;">
+        <pre><code>{}</code></pre>
+        
+      </div>
+    <div class="snippet_xml" style="display: none;">
+      <pre><code>&lt;?xml version="1.0"?&gt;
+&lt;!-- invalid XML --&gt;
+</code></pre>
+      
+    </div>
+  </div>
+</div>
+</div></div></div></span></p>
+            <br>
+            <div class="response-content-type"><div><label data-sw-translate="" for="rct0.5253772097569747">Response Content Type</label>
+<select name="responseContentType" id="rct0.5253772097569747">
+  <option value="application/json">application/json</option>
+  <option value="text/json">text/json</option>
+  <option value="application/xml">application/xml</option>
+  <option value="text/xml">text/xml</option>
+</select>
+</div></div>
+            </div>
+
+
+        <form accept-charset="UTF-8" class="sandbox">
+          <div style="margin:0;padding:0;display:inline"></div>
+          <h4 data-sw-translate="">Parameters</h4>
+          <table class="fullwidth parameters">
+          <thead>
+            <tr>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter</th>
+            <th style="width: 310px; max-width: 310px" data-sw-translate="">Value</th>
+            <th style="width: 200px; max-width: 200px" data-sw-translate="">Description</th>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter Type</th>
+            <th style="width: 220px; max-width: 230px" data-sw-translate="">Data Type</th>
+            </tr>
+          </thead>
+          <tbody class="operation-params">
+
+          <tr><td class="code required"><label for="mID0.6455770996369647">ID</label></td>
+<td>
+<input class="parameter required" minlength="1" name="ID" placeholder="(required)" id="mID0.6455770996369647" type="text" value=""></td>
+<td>
+	<strong><span class="markdown"></span></strong>
+</td>
+<td>path</td>
+<td><span class="model-signature">integer</span></td>
+</tr></tbody>
+          </table>
+          <div class="sandbox_header">
+            <input class="submit" type="submit" value="Try it out!" data-sw-translate="">
+            <a href="https://localhost:44336/swagger/ui/index#" class="response_hider" style="display:none" data-sw-translate="">Hide Response</a>
+            <span class="response_throbber" style="display:none"></span>
+          </div>
+        </form>
+        <div class="response" style="display:none">
+          <h4 class="curl">Curl</h4>
+          <div class="block curl"></div>
+          <h4 data-sw-translate="">Request URL</h4>
+          <div class="block request_url"></div>
+          <h4 data-sw-translate="">Response Body</h4>
+          <div class="block response_body"></div>
+          <h4 data-sw-translate="">Response Code</h4>
+          <div class="block response_code"></div>
+          <h4 data-sw-translate="">Response Headers</h4>
+          <div class="block response_headers"></div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li><li class="endpoint">  <ul class="operations">
+    <li class="post operation" id="Patient_Patient_Post_0">
+      <div class="heading">
+        <h3>
+          <span class="http_method">
+          <a href="https://localhost:44336/swagger/ui/index#!/Patient/Patient_Post_0" class="toggleOperation">post</a>
+          </span>
+          <span class="path">
+          <a href="https://localhost:44336/swagger/ui/index#!/Patient/Patient_Post_0" class="toggleOperation ">/api/Patient</a>
+          </span>
+        </h3>
+        <ul class="options">
+          <li>
+          <a href="https://localhost:44336/swagger/ui/index#!/Patient/Patient_Post_0" class="toggleOperation"><span class="markdown"></span></a>
+          </li>
+        </ul>
+      </div>
+      <div class="content" id="Patient_Patient_Post_0_content" style="">
+          <div class="response-class">
+            <h4><span data-sw-translate="">Response Class</span> (<span data-sw-translate="">Status</span> 200)</h4>
+              <div class="markdown"><p>OK</p>
+</div>
+            <p><span class="model-signature"><div>
+<div>
+<ul class="signature-nav">
+  <li><a class="description-link" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Model</a></li>
+  <li><a class="snippet-link selected" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Example Value</a></li>
+</ul>
+<div>
+
+<div class="signature-container">
+  <div class="description" style="display: none;">
+      <span class="strong">Inline Model {</span><span class="strong">}</span>
+  </div>
+
+  <div class="snippet" style="display: block;">
+      <div class="snippet_json" style="display: block;">
+        <pre><code>{}</code></pre>
+        
+      </div>
+    <div class="snippet_xml" style="display: none;">
+      <pre><code>&lt;?xml version="1.0"?&gt;
+&lt;!-- invalid XML --&gt;
+</code></pre>
+      
+    </div>
+  </div>
+</div>
+</div></div></div></span></p>
+            <br>
+            <div class="response-content-type"><div><label data-sw-translate="" for="rct0.13450647709389418">Response Content Type</label>
+<select name="responseContentType" id="rct0.13450647709389418">
+  <option value="application/json">application/json</option>
+  <option value="text/json">text/json</option>
+  <option value="application/xml">application/xml</option>
+  <option value="text/xml">text/xml</option>
+</select>
+</div></div>
+            </div>
+
+
+        <form accept-charset="UTF-8" class="sandbox">
+          <div style="margin:0;padding:0;display:inline"></div>
+          <h4 data-sw-translate="">Parameters</h4>
+          <table class="fullwidth parameters">
+          <thead>
+            <tr>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter</th>
+            <th style="width: 310px; max-width: 310px" data-sw-translate="">Value</th>
+            <th style="width: 200px; max-width: 200px" data-sw-translate="">Description</th>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter Type</th>
+            <th style="width: 220px; max-width: 230px" data-sw-translate="">Data Type</th>
+            </tr>
+          </thead>
+          <tbody class="operation-params">
+
+          <tr><td class="code required"><label for="mpatient0.8407164134078982">patient</label></td>
+<td>
+				<textarea class="body-textarea required" placeholder="(required)" name="patient" id="mpatient0.8407164134078982"></textarea>
+				<div class="editor_holder"></div>
+				<br>
+				<div class="parameter-content-type"><div><label for="pct0.04887866686659614" data-sw-translate="">Parameter content type:</label>
+<select name="parameterContentType" id="pct0.04887866686659614">
+  <option value="application/json">application/json</option>
+  <option value="text/json">text/json</option>
+  <option value="application/xml">application/xml</option>
+  <option value="text/xml">text/xml</option>
+  <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+</select>
+</div></div>
+</td>
+<td>
+	<strong><span class="markdown"></span></strong>
+</td>
+<td>body</td>
+<td><span class="model-signature"><div>
+<div>
+<ul class="signature-nav">
+  <li><a class="description-link" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Model</a></li>
+  <li><a class="snippet-link selected" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Example Value</a></li>
+</ul>
+<div>
+
+<div class="signature-container">
+  <div class="description" style="display: none;">
+      <span class="strong">patient {</span><div><span class="propName ">Id</span> (<span class="propType">integer</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">Name</span> (<span class="propType">string</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">birthday</span> (<span class="propType">string</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">nationalID</span> (<span class="propType">string</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">city</span> (<span class="propType">string</span>, <span class="propOptKey">optional</span>)</div><span class="strong">}</span>
+  </div>
+
+  <div class="snippet" style="display: block;">
+      <div class="snippet_json" style="display: block;">
+        <pre><code>{
+  "Id": 0,
+  "Name": "string",
+  "birthday": "2022-04-08T23:49:21.614Z",
+  "nationalID": "string",
+  "city": "string"
+}</code></pre>
+        <small class="notice" data-sw-translate=""></small>
+      </div>
+    <div class="snippet_xml" style="display: none;">
+      <pre><code>&lt;?xml version="1.0"?&gt;
+&lt;patient&gt;
+  &lt;Id&gt;1&lt;/Id&gt;
+  &lt;Name&gt;string&lt;/Name&gt;
+  &lt;birthday&gt;1970-01-01T00:00:00.001Z&lt;/birthday&gt;
+  &lt;nationalID&gt;string&lt;/nationalID&gt;
+  &lt;city&gt;string&lt;/city&gt;
+&lt;/patient&gt;
+</code></pre>
+      <small class="notice" data-sw-translate=""></small>
+    </div>
+  </div>
+</div>
+</div></div></div></span></td>
+</tr></tbody>
+          </table>
+          <div class="sandbox_header">
+            <input class="submit" type="submit" value="Try it out!" data-sw-translate="">
+            <a href="https://localhost:44336/swagger/ui/index#" class="response_hider" style="display:none" data-sw-translate="">Hide Response</a>
+            <span class="response_throbber" style="display:none"></span>
+          </div>
+        </form>
+        <div class="response" style="display:none">
+          <h4 class="curl">Curl</h4>
+          <div class="block curl"></div>
+          <h4 data-sw-translate="">Request URL</h4>
+          <div class="block request_url"></div>
+          <h4 data-sw-translate="">Response Body</h4>
+          <div class="block response_body"></div>
+          <h4 data-sw-translate="">Response Code</h4>
+          <div class="block response_code"></div>
+          <h4 data-sw-translate="">Response Headers</h4>
+          <div class="block response_headers"></div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li></ul>
+</li><li id="resource_Values" class="resource active"><div class="heading">
+  <h2>
+    <a href="https://localhost:44336/swagger/ui/index#!/Values" class="toggleEndpointList" data-id="Values">Values</a> 
+  </h2>
+  <ul class="options">
+    <li>
+      <a href="https://localhost:44336/swagger/ui/index#!/Values" id="endpointListTogger_Values" class="toggleEndpointList" data-id="Values" data-sw-translate="">Show/Hide</a>
+    </li>
+    <li>
+      <a href="https://localhost:44336/swagger/ui/index#" class="collapseResource" data-id="Values" data-sw-translate="">
+        List Operations
+      </a>
+    </li>
+    <li>
+      <a href="https://localhost:44336/swagger/ui/index#" class="expandResource" data-id="Values" data-sw-translate="">
+        Expand Operations
+      </a>
+    </li>
+  </ul>
+</div>
+<ul class="endpoints" id="Values_endpoint_list" style="">
+
+<li class="endpoint">  <ul class="operations">
+    <li class="get operation" id="Values_Values_Get">
+      <div class="heading">
+        <h3>
+          <span class="http_method">
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Get" class="toggleOperation">get</a>
+          </span>
+          <span class="path">
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Get" class="toggleOperation ">/api/Values</a>
+          </span>
+        </h3>
+        <ul class="options">
+          <li>
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Get" class="toggleOperation"><span class="markdown"></span></a>
+          </li>
+        </ul>
+      </div>
+      <div class="content" id="Values_Values_Get_content" style="display:none">
+          <div class="response-class">
+            <h4><span data-sw-translate="">Response Class</span> (<span data-sw-translate="">Status</span> 200)</h4>
+              <div class="markdown"><p>OK</p>
+</div>
+            <p><span class="model-signature"><div>
+<div>
+<ul class="signature-nav">
+  <li><a class="description-link" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Model</a></li>
+  <li><a class="snippet-link selected" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Example Value</a></li>
+</ul>
+<div>
+
+<div class="signature-container">
+  <div class="description" style="display: none;">
+      <span class="strong">Inline Model [</span><div>string</div><span class="strong">]</span>
+  </div>
+
+  <div class="snippet" style="display: block;">
+      <div class="snippet_json" style="display: block;">
+        <pre><code>[
+  "string"
+]</code></pre>
+        
+      </div>
+    <div class="snippet_xml" style="display: none;">
+      <pre><code>&lt;?xml version="1.0"?&gt;
+  &lt;Inline Model&gt;string&lt;/Inline Model&gt;
+</code></pre>
+      
+    </div>
+  </div>
+</div>
+</div></div></div></span></p>
+            <br>
+            <div class="response-content-type"><div><label data-sw-translate="" for="rct0.16006147268463922">Response Content Type</label>
+<select name="responseContentType" id="rct0.16006147268463922">
+  <option value="application/json">application/json</option>
+  <option value="text/json">text/json</option>
+  <option value="application/xml">application/xml</option>
+  <option value="text/xml">text/xml</option>
+</select>
+</div></div>
+            </div>
+
+
+        <form accept-charset="UTF-8" class="sandbox">
+          <div style="margin:0;padding:0;display:inline"></div>
+          <div class="sandbox_header">
+            <input class="submit" type="submit" value="Try it out!" data-sw-translate="">
+            <a href="https://localhost:44336/swagger/ui/index#" class="response_hider" style="display:none" data-sw-translate="">Hide Response</a>
+            <span class="response_throbber" style="display:none"></span>
+          </div>
+        </form>
+        <div class="response" style="display:none">
+          <h4 class="curl">Curl</h4>
+          <div class="block curl"></div>
+          <h4 data-sw-translate="">Request URL</h4>
+          <div class="block request_url"></div>
+          <h4 data-sw-translate="">Response Body</h4>
+          <div class="block response_body"></div>
+          <h4 data-sw-translate="">Response Code</h4>
+          <div class="block response_code"></div>
+          <h4 data-sw-translate="">Response Headers</h4>
+          <div class="block response_headers"></div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li><li class="endpoint">  <ul class="operations">
+    <li class="post operation" id="Values_Values_Post">
+      <div class="heading">
+        <h3>
+          <span class="http_method">
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Post" class="toggleOperation">post</a>
+          </span>
+          <span class="path">
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Post" class="toggleOperation ">/api/Values</a>
+          </span>
+        </h3>
+        <ul class="options">
+          <li>
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Post" class="toggleOperation"><span class="markdown"></span></a>
+          </li>
+        </ul>
+      </div>
+      <div class="content" id="Values_Values_Post_content" style="display:none">
+
+
+        <form accept-charset="UTF-8" class="sandbox">
+          <div style="margin:0;padding:0;display:inline"></div>
+          <h4 data-sw-translate="">Parameters</h4>
+          <table class="fullwidth parameters">
+          <thead>
+            <tr>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter</th>
+            <th style="width: 310px; max-width: 310px" data-sw-translate="">Value</th>
+            <th style="width: 200px; max-width: 200px" data-sw-translate="">Description</th>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter Type</th>
+            <th style="width: 220px; max-width: 230px" data-sw-translate="">Data Type</th>
+            </tr>
+          </thead>
+          <tbody class="operation-params">
+
+          <tr><td class="code required"><label for="mvalue0.813573639613264">value</label></td>
+<td>
+				<textarea class="body-textarea required" placeholder="(required)" name="value" id="mvalue0.813573639613264"></textarea>
+				<div class="editor_holder"></div>
+				<br>
+				<div class="parameter-content-type"><div><label for="pct0.8831764000588367" data-sw-translate="">Parameter content type:</label>
+<select name="parameterContentType" id="pct0.8831764000588367">
+  <option value="application/json">application/json</option>
+  <option value="text/json">text/json</option>
+  <option value="application/xml">application/xml</option>
+  <option value="text/xml">text/xml</option>
+  <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+</select>
+</div></div>
+</td>
+<td>
+	<strong><span class="markdown"></span></strong>
+</td>
+<td>body</td>
+<td><span class="model-signature">string</span></td>
+</tr></tbody>
+          </table>
+          <div style="margin:0;padding:0;display:inline"></div>
+          <h4 data-sw-translate="">Response Messages</h4>
+          <table class="fullwidth response-messages">
+            <thead>
+            <tr>
+              <th data-sw-translate="">HTTP Status Code</th>
+              <th data-sw-translate="">Reason</th>
+              <th data-sw-translate="">Response Model</th>
+              <th data-sw-translate="">Headers</th>
+            </tr>
+            </thead>
+            <tbody class="operation-status">
+            <tr><td width="15%" class="code">204</td>
+<td class="markdown"><p>No Content</p>
+</td>
+<td width="50%"><span class="model-signature"><div>    
+</div></span></td>
+<td class="headers">
+  <table>
+    <tbody>
+    </tbody>
+  </table>
+</td></tr></tbody>
+          </table>
+          <div class="sandbox_header">
+            <input class="submit" type="submit" value="Try it out!" data-sw-translate="">
+            <a href="https://localhost:44336/swagger/ui/index#" class="response_hider" style="display:none" data-sw-translate="">Hide Response</a>
+            <span class="response_throbber" style="display:none"></span>
+          </div>
+        </form>
+        <div class="response" style="display:none">
+          <h4 class="curl">Curl</h4>
+          <div class="block curl"></div>
+          <h4 data-sw-translate="">Request URL</h4>
+          <div class="block request_url"></div>
+          <h4 data-sw-translate="">Response Body</h4>
+          <div class="block response_body"></div>
+          <h4 data-sw-translate="">Response Code</h4>
+          <div class="block response_code"></div>
+          <h4 data-sw-translate="">Response Headers</h4>
+          <div class="block response_headers"></div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li><li class="endpoint">  <ul class="operations">
+    <li class="delete operation" id="Values_Values_Delete">
+      <div class="heading">
+        <h3>
+          <span class="http_method">
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Delete" class="toggleOperation">delete</a>
+          </span>
+          <span class="path">
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Delete" class="toggleOperation ">/api/Values/{id}</a>
+          </span>
+        </h3>
+        <ul class="options">
+          <li>
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Delete" class="toggleOperation"><span class="markdown"></span></a>
+          </li>
+        </ul>
+      </div>
+      <div class="content" id="Values_Values_Delete_content" style="display:none">
+
+
+        <form accept-charset="UTF-8" class="sandbox">
+          <div style="margin:0;padding:0;display:inline"></div>
+          <h4 data-sw-translate="">Parameters</h4>
+          <table class="fullwidth parameters">
+          <thead>
+            <tr>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter</th>
+            <th style="width: 310px; max-width: 310px" data-sw-translate="">Value</th>
+            <th style="width: 200px; max-width: 200px" data-sw-translate="">Description</th>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter Type</th>
+            <th style="width: 220px; max-width: 230px" data-sw-translate="">Data Type</th>
+            </tr>
+          </thead>
+          <tbody class="operation-params">
+
+          <tr><td class="code required"><label for="mid0.8128111576118737">id</label></td>
+<td>
+<input class="parameter required" minlength="1" name="id" placeholder="(required)" id="mid0.8128111576118737" type="text" value=""></td>
+<td>
+	<strong><span class="markdown"></span></strong>
+</td>
+<td>path</td>
+<td><span class="model-signature">integer</span></td>
+</tr></tbody>
+          </table>
+          <div style="margin:0;padding:0;display:inline"></div>
+          <h4 data-sw-translate="">Response Messages</h4>
+          <table class="fullwidth response-messages">
+            <thead>
+            <tr>
+              <th data-sw-translate="">HTTP Status Code</th>
+              <th data-sw-translate="">Reason</th>
+              <th data-sw-translate="">Response Model</th>
+              <th data-sw-translate="">Headers</th>
+            </tr>
+            </thead>
+            <tbody class="operation-status">
+            <tr><td width="15%" class="code">204</td>
+<td class="markdown"><p>No Content</p>
+</td>
+<td width="50%"><span class="model-signature"><div>    
+</div></span></td>
+<td class="headers">
+  <table>
+    <tbody>
+    </tbody>
+  </table>
+</td></tr></tbody>
+          </table>
+          <div class="sandbox_header">
+            <input class="submit" type="submit" value="Try it out!" data-sw-translate="">
+            <a href="https://localhost:44336/swagger/ui/index#" class="response_hider" style="display:none" data-sw-translate="">Hide Response</a>
+            <span class="response_throbber" style="display:none"></span>
+          </div>
+        </form>
+        <div class="response" style="display:none">
+          <h4 class="curl">Curl</h4>
+          <div class="block curl"></div>
+          <h4 data-sw-translate="">Request URL</h4>
+          <div class="block request_url"></div>
+          <h4 data-sw-translate="">Response Body</h4>
+          <div class="block response_body"></div>
+          <h4 data-sw-translate="">Response Code</h4>
+          <div class="block response_code"></div>
+          <h4 data-sw-translate="">Response Headers</h4>
+          <div class="block response_headers"></div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li><li class="endpoint">  <ul class="operations">
+    <li class="get operation" id="Values_Values_Get_0">
+      <div class="heading">
+        <h3>
+          <span class="http_method">
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Get_0" class="toggleOperation">get</a>
+          </span>
+          <span class="path">
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Get_0" class="toggleOperation ">/api/Values/{id}</a>
+          </span>
+        </h3>
+        <ul class="options">
+          <li>
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Get_0" class="toggleOperation"><span class="markdown"></span></a>
+          </li>
+        </ul>
+      </div>
+      <div class="content" id="Values_Values_Get_0_content" style="display:none">
+          <div class="response-class">
+            <h4><span data-sw-translate="">Response Class</span> (<span data-sw-translate="">Status</span> 200)</h4>
+              <div class="markdown"><p>OK</p>
+</div>
+            <p><span class="model-signature"><div>
+<div>
+<ul class="signature-nav">
+  <li><a class="description-link" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Model</a></li>
+  <li><a class="snippet-link selected" href="https://localhost:44336/swagger/ui/index#" data-sw-translate="">Example Value</a></li>
+</ul>
+<div>
+
+<div class="signature-container">
+  <div class="description" style="display: none;">
+      <span class="strong">patient {</span><div><span class="propName ">Id</span> (<span class="propType">integer</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">Name</span> (<span class="propType">string</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">birthday</span> (<span class="propType">string</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">nationalID</span> (<span class="propType">string</span>, <span class="propOptKey">optional</span>),</div><div><span class="propName ">city</span> (<span class="propType">string</span>, <span class="propOptKey">optional</span>)</div><span class="strong">}</span>
+  </div>
+
+  <div class="snippet" style="display: block;">
+      <div class="snippet_json" style="display: block;">
+        <pre><code>{
+  "Id": 0,
+  "Name": "string",
+  "birthday": "2022-04-08T23:49:21.620Z",
+  "nationalID": "string",
+  "city": "string"
+}</code></pre>
+        
+      </div>
+    <div class="snippet_xml" style="display: none;">
+      <pre><code>&lt;?xml version="1.0"?&gt;
+&lt;patient&gt;
+  &lt;Id&gt;1&lt;/Id&gt;
+  &lt;Name&gt;string&lt;/Name&gt;
+  &lt;birthday&gt;1970-01-01T00:00:00.001Z&lt;/birthday&gt;
+  &lt;nationalID&gt;string&lt;/nationalID&gt;
+  &lt;city&gt;string&lt;/city&gt;
+&lt;/patient&gt;
+</code></pre>
+      
+    </div>
+  </div>
+</div>
+</div></div></div></span></p>
+            <br>
+            <div class="response-content-type"><div><label data-sw-translate="" for="rct0.8491950196039975">Response Content Type</label>
+<select name="responseContentType" id="rct0.8491950196039975">
+  <option value="application/json">application/json</option>
+  <option value="text/json">text/json</option>
+  <option value="application/xml">application/xml</option>
+  <option value="text/xml">text/xml</option>
+</select>
+</div></div>
+            </div>
+
+
+        <form accept-charset="UTF-8" class="sandbox">
+          <div style="margin:0;padding:0;display:inline"></div>
+          <h4 data-sw-translate="">Parameters</h4>
+          <table class="fullwidth parameters">
+          <thead>
+            <tr>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter</th>
+            <th style="width: 310px; max-width: 310px" data-sw-translate="">Value</th>
+            <th style="width: 200px; max-width: 200px" data-sw-translate="">Description</th>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter Type</th>
+            <th style="width: 220px; max-width: 230px" data-sw-translate="">Data Type</th>
+            </tr>
+          </thead>
+          <tbody class="operation-params">
+
+          <tr><td class="code required"><label for="mid0.21322855542949126">id</label></td>
+<td>
+<input class="parameter required" minlength="1" name="id" placeholder="(required)" id="mid0.21322855542949126" type="text" value=""></td>
+<td>
+	<strong><span class="markdown"></span></strong>
+</td>
+<td>path</td>
+<td><span class="model-signature">integer</span></td>
+</tr></tbody>
+          </table>
+          <div class="sandbox_header">
+            <input class="submit" type="submit" value="Try it out!" data-sw-translate="">
+            <a href="https://localhost:44336/swagger/ui/index#" class="response_hider" style="display:none" data-sw-translate="">Hide Response</a>
+            <span class="response_throbber" style="display:none"></span>
+          </div>
+        </form>
+        <div class="response" style="display:none">
+          <h4 class="curl">Curl</h4>
+          <div class="block curl"></div>
+          <h4 data-sw-translate="">Request URL</h4>
+          <div class="block request_url"></div>
+          <h4 data-sw-translate="">Response Body</h4>
+          <div class="block response_body"></div>
+          <h4 data-sw-translate="">Response Code</h4>
+          <div class="block response_code"></div>
+          <h4 data-sw-translate="">Response Headers</h4>
+          <div class="block response_headers"></div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li><li class="endpoint">  <ul class="operations">
+    <li class="put operation" id="Values_Values_Put">
+      <div class="heading">
+        <h3>
+          <span class="http_method">
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Put" class="toggleOperation">put</a>
+          </span>
+          <span class="path">
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Put" class="toggleOperation ">/api/Values/{id}</a>
+          </span>
+        </h3>
+        <ul class="options">
+          <li>
+          <a href="https://localhost:44336/swagger/ui/index#!/Values/Values_Put" class="toggleOperation"><span class="markdown"></span></a>
+          </li>
+        </ul>
+      </div>
+      <div class="content" id="Values_Values_Put_content" style="display:none">
+
+
+        <form accept-charset="UTF-8" class="sandbox">
+          <div style="margin:0;padding:0;display:inline"></div>
+          <h4 data-sw-translate="">Parameters</h4>
+          <table class="fullwidth parameters">
+          <thead>
+            <tr>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter</th>
+            <th style="width: 310px; max-width: 310px" data-sw-translate="">Value</th>
+            <th style="width: 200px; max-width: 200px" data-sw-translate="">Description</th>
+            <th style="width: 100px; max-width: 100px" data-sw-translate="">Parameter Type</th>
+            <th style="width: 220px; max-width: 230px" data-sw-translate="">Data Type</th>
+            </tr>
+          </thead>
+          <tbody class="operation-params">
+
+          <tr><td class="code required"><label for="mid0.8151880484309557">id</label></td>
+<td>
+<input class="parameter required" minlength="1" name="id" placeholder="(required)" id="mid0.8151880484309557" type="text" value=""></td>
+<td>
+	<strong><span class="markdown"></span></strong>
+</td>
+<td>path</td>
+<td><span class="model-signature">integer</span></td>
+</tr><tr><td class="code required"><label for="mvalue0.6918756139198021">value</label></td>
+<td>
+				<textarea class="body-textarea required" placeholder="(required)" name="value" id="mvalue0.6918756139198021"></textarea>
+				<div class="editor_holder"></div>
+				<br>
+				<div class="parameter-content-type"><div><label for="pct0.7230693283431067" data-sw-translate="">Parameter content type:</label>
+<select name="parameterContentType" id="pct0.7230693283431067">
+  <option value="application/json">application/json</option>
+  <option value="text/json">text/json</option>
+  <option value="application/xml">application/xml</option>
+  <option value="text/xml">text/xml</option>
+  <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+</select>
+</div></div>
+</td>
+<td>
+	<strong><span class="markdown"></span></strong>
+</td>
+<td>body</td>
+<td><span class="model-signature">string</span></td>
+</tr></tbody>
+          </table>
+          <div style="margin:0;padding:0;display:inline"></div>
+          <h4 data-sw-translate="">Response Messages</h4>
+          <table class="fullwidth response-messages">
+            <thead>
+            <tr>
+              <th data-sw-translate="">HTTP Status Code</th>
+              <th data-sw-translate="">Reason</th>
+              <th data-sw-translate="">Response Model</th>
+              <th data-sw-translate="">Headers</th>
+            </tr>
+            </thead>
+            <tbody class="operation-status">
+            <tr><td width="15%" class="code">204</td>
+<td class="markdown"><p>No Content</p>
+</td>
+<td width="50%"><span class="model-signature"><div>    
+</div></span></td>
+<td class="headers">
+  <table>
+    <tbody>
+    </tbody>
+  </table>
+</td></tr></tbody>
+          </table>
+          <div class="sandbox_header">
+            <input class="submit" type="submit" value="Try it out!" data-sw-translate="">
+            <a href="https://localhost:44336/swagger/ui/index#" class="response_hider" style="display:none" data-sw-translate="">Hide Response</a>
+            <span class="response_throbber" style="display:none"></span>
+          </div>
+        </form>
+        <div class="response" style="display:none">
+          <h4 class="curl">Curl</h4>
+          <div class="block curl"></div>
+          <h4 data-sw-translate="">Request URL</h4>
+          <div class="block request_url"></div>
+          <h4 data-sw-translate="">Response Body</h4>
+          <div class="block response_body"></div>
+          <h4 data-sw-translate="">Response Code</h4>
+          <div class="block response_code"></div>
+          <h4 data-sw-translate="">Response Headers</h4>
+          <div class="block response_headers"></div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li></ul>
+</li></ul>
+
+  <div class="footer">
+    <h4 style="color: #999">[ <span style="font-variant: small-caps">base url</span>: 
+  , <span style="font-variant: small-caps" data-sw-translate="">api version</span>: v1
+    ]
+    </h4>
+    </div>
+</div>
+</div>
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>
